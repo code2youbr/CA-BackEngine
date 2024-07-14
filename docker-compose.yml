@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: cardapio-automatizado-db
+    environment:
+      POSTGRES_USER: gabriel
+      POSTGRES_PASSWORD: gabriel12
+      POSTGRES_DB: cardapio_automatizado
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: nestjs-app
+    environment:
+      TYPEORM_CONNECTION: postgres
+      TYPEORM_HOST: db
+      TYPEORM_PORT: 5432
+      TYPEORM_USERNAME: gabriel
+      TYPEORM_PASSWORD: gabriel12
+      TYPEORM_DATABASE: cardapio_automatizado
+      TYPEORM_SYNCHRONIZE: 'true'
+      TYPEORM_ENTITIES: 'dist/**/*.entity.js'
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
