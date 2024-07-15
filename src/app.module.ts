@@ -19,7 +19,7 @@ import { AccountAuth } from './account-auth/account-auth.model'; // Importe o mo
       database: 'cardapio_automatizado',
       autoLoadModels: true,
       synchronize: true,
-      models: [AccountAuth, AccountUser],
+      models: [AccountAuth],
     }),
     SequelizeModule.forFeature([AccountAuth]),
     AccountAuthModule,
