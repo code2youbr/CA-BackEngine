@@ -1,23 +1,23 @@
-# Use an official Node runtime as a parent image
+# Use uma imagem oficial do Node.js como imagem base
 FROM node:18
 
-# Set the working directory
+# Defina o diretório de trabalho no contêiner
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Copie o package.json e package-lock.json para o diretório de trabalho
 COPY package*.json ./
 
-# Install dependencies
+# Instale as dependências do aplicativo
 RUN npm install
 
-# Copy the rest of the application code
+# Copie o restante do código da aplicação para o diretório de trabalho
 COPY . .
 
-# Build the NestJS application
+# Compile a aplicação NestJS
 RUN npm run build
 
-# Expose the application port
+# Exponha a porta que a aplicação irá rodar
 EXPOSE 3000
 
-# Define the command to run the application
+# Defina o comando para iniciar a aplicação
 CMD ["npm", "run", "start:prod"]
