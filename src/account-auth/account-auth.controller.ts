@@ -24,6 +24,9 @@ export class AccountAuthController {
   @Post('login')
   async loginAccount(@Body() accessDto: CreateAndAccessDto){
     const { username, password } = accessDto;
-    //await this.service.l
+    return await this.service.login(username, password);
   }
+
+  @Post('update')
+
 }

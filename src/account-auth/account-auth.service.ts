@@ -1,5 +1,3 @@
-// noinspection TypeScriptValidateTypes
-
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {Md5} from 'ts-md5';
 import { AccountAuthModel } from './account-auth.model';
@@ -14,7 +12,7 @@ export class AccountAuthService {
   }
   logger = new Logger(AccountAuthService.name);
 
-  async findByUsername(username: string): Promise<AccountAuthModel | null> {
+  private async findByUsername(username: string): Promise<AccountAuthModel> {
     return this.accountModel.findOne({
       where: {
         username
@@ -39,10 +37,12 @@ export class AccountAuthService {
     const account = await this.accountModel.findOne({
       where:{
         username: username,
-
+        password: Md5.hashStr(password)
       }
     });
-    return true
+
+    return !!account;
+
   }
 }
 //todo usar o MD5 para codificar a senha.
