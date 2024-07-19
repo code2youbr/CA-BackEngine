@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post, Req } from '@nestjs/common';
 import { AccountAuthService } from './account-auth.service';
 import { CreateAndAccessDto } from './types/CreateAndAccessDto';
+import { AccessDto } from '@app/account-auth/types/AccessDto';
 
 @Controller('account-auth')
 export class AccountAuthController {
@@ -10,23 +11,22 @@ export class AccountAuthController {
 
   @Post('create')
   async createAccount(@Body() createDto: CreateAndAccessDto):Promise<string> {
-    try{
-      const { username, password } = createDto;
-      await this.service.createAccount(username, password);
-      return 'ok';
-    }
-    catch(e){
-      this.logger.error(e);
-      throw new HttpException('Failed to create account', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    const { username, password, email } = createDto;
+    await this.service.createAccount(username, password, email);
+    return 'ok';
   }
 
   @Post('login')
-  async loginAccount(@Body() accessDto: CreateAndAccessDto){
-    const { username, password } = accessDto;
-    return await this.service.login(username, password);
+  async loginAccount(@Body() accessDto: AccessDto){
+    try{
+      const {identifier, password} = accessDto;
+      return await this.service.login(identifier, password);
+    }
+    catch(error){
+      this.logger.error(error);
+    }
   }
 
-  @Post('update')
+  //@Post('update')
 
 }

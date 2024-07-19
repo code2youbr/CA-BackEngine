@@ -23,4 +23,10 @@ export class AccountAuthModel extends Model {
     type: DataTypes.STRING,
   })
   password: string;
+
+  @Column({
+    allowNull: false,
+    type: DataTypes.STRING,
+  })
+  email: string
 }
