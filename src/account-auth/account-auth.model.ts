@@ -1,27 +1,26 @@
 import { DataTypes } from 'sequelize';
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 
 @Table({
   tableName: 'account_auth',
 })
-export class AccountAuth extends Model{
+export class AccountAuthModel extends Model {
+  @PrimaryKey
+  @AutoIncrement
   @Column({
     type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
   })
   id: number;
 
   @Column({
-    type: DataTypes.STRING,
     allowNull: false,
+    type: DataTypes.STRING,
   })
   username: string;
 
   @Column({
-    type: DataTypes.STRING,
     allowNull: false,
+    type: DataTypes.STRING,
   })
   password: string;
-
 }

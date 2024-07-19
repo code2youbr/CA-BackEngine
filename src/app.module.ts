@@ -7,16 +7,17 @@ import { AccountAuthModule } from './account-auth/account-auth.module';
 import { AccountUserModule } from './account-user/account-user.module';
 import { MenuModule } from './menu/menu.module';
 import { OrderMenuModule } from './order-menu/order-menu.module';
-import { AccountAuth } from './account-auth/account-auth.model';
+import { AccountAuthModel } from './account-auth/account-auth.model';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
-
-console.log('Database Host:', process.env.PG_HOST);
-console.log('Database Port:', process.env.PG_PORT);
-console.log('Database User:', process.env.PG_USER);
-console.log('Database Password:', process.env.PG_PASSWORD);
-console.log('Database Name:', process.env.PG_DATABASE);
+const customLogger = (msg: string) => {
+  // Ignore logs containing specific SQL statements
+  if (!msg.includes('SELECT table_name FROM information_schema.tables') &&
+    !msg.includes('SELECT i.relname AS name, ix.indisprimary AS primary')) {
+    console.log(`Sequelize: ${msg}`);
+  }
+};
 
 @Module({
   imports: [
@@ -33,10 +34,10 @@ console.log('Database Name:', process.env.PG_DATABASE);
       database: process.env.PG_DATABASE,
       autoLoadModels: true,
       synchronize: true,
-      models: [AccountAuth],
-      logging: console.log,
+      models: [AccountAuthModel],
+      logging: customLogger,
     }),
-    SequelizeModule.forFeature([AccountAuth]),
+    SequelizeModule.forFeature([AccountAuthModel]),
     AccountAuthModule,
     AccountUserModule,
     MenuModule,
