@@ -8,6 +8,7 @@ import { AccountUserModule } from './account-user/account-user.module';
 import { MenuModule } from './menu/menu.module';
 import { OrderMenuModule } from './order-menu/order-menu.module';
 import { AccountAuthModel } from './account-auth/account-auth.model';
+import { EmailModule } from './email/email.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -41,7 +42,8 @@ const customLogger = (msg: string) => {
     AccountAuthModule,
     AccountUserModule,
     MenuModule,
-    OrderMenuModule
+    OrderMenuModule,
+    EmailModule
   ],
   controllers: [AppController],
   providers: [AppService],
