@@ -12,6 +12,7 @@ import { EmailModule } from './email/email.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
+
 const customLogger = (msg: string) => {
   // Ignore logs containing specific SQL statements
   if (!msg.includes('SELECT table_name FROM information_schema.tables') &&
