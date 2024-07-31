@@ -1,6 +1,5 @@
 import { IsString, IsEmail, IsNotEmpty } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
-import { Optional } from '@nestjs/common';
 
 
 export class AccessDto {

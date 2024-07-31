@@ -8,5 +8,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
   imports: [SequelizeModule.forFeature([AccountAuthModel])],
   providers: [AccountAuthService],
   controllers: [AccountAuthController],
+  exports: [AccountAuthService],
 })
 export class AccountAuthModule {}

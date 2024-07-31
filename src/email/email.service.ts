@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class EmailService {
@@ -17,12 +18,14 @@ export class EmailService {
     });
   }
 
-  async sendMail(to: string, subject: string, text: string) {
+  async sendMail(to: string) {
+    const recoveryKey = this.generateVerificationCode()
+
     const mailOptions = {
       from: this.configService.get<string>('EMAIL_USER'),
       to: to,
-      subject: subject,
-      text: text,
+      subject: "Código para trocar sua senha",
+      text: `Aqui está o seu código que permite trocar a senha \n ${recoveryKey} \nse não foi você que pediu ignore esta mensagem`,
     };
 
     try {
@@ -31,5 +34,9 @@ export class EmailService {
     } catch (error) {
       console.error('Error sending email: ' + error);
     }
+  }
+
+  generateVerificationCode(): string {
+    return crypto.randomBytes(3).toString('hex'); // Gera um código de 6 caracteres em hexadecimal
   }
 }

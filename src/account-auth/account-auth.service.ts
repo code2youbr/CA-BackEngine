@@ -54,10 +54,10 @@ export class AccountAuthService {
     })
 
     if(account){
-      await this.emailService.sendMail(email,"Recover password", )
+     await this.emailService.sendMail(email)
     }
 
-
+    throw new HttpException( 'Account not Found', HttpStatus.BAD_REQUEST);
   }
   //todo: method to change password
   // Create a model that can save this number to verify later
