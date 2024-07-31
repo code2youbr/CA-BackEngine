@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { Column, Model, Table, PrimaryKey, AutoIncrement, HasOne } from 'sequelize-typescript';
-import { EmailModel } from '@app/email/email.model';
+import { EmailModel } from '../email/email.model';
 
 @Table({
   tableName: 'account_auth',
@@ -31,7 +31,9 @@ export class AccountAuthModel extends Model {
   })
   email: string;
 
-  @HasOne(() => EmailModel)
+  @HasOne(() => EmailModel, {
+    foreignKey: 'recovery_key',
+  })
   recoveryKey: EmailModel;
 
 }

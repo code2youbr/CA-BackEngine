@@ -27,6 +27,15 @@ export class AccountAuthController {
     }
   }
 
-  //@Post('update')
+  @Post('update')
+  async changePassword(@Body() email:string):Promise<string> {
+    try{
+      await this.service.recoverPassword(email)
+      return 'ok';
+    }catch(error){
+      this.logger.error(error);
+      throw HttpStatus.BAD_REQUEST;
+    }
+  }
 
 }

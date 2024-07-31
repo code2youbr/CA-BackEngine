@@ -7,8 +7,9 @@ import { AccountAuthModule } from './account-auth/account-auth.module';
 import { AccountUserModule } from './account-user/account-user.module';
 import { MenuModule } from './menu/menu.module';
 import { OrderMenuModule } from './order-menu/order-menu.module';
-import { AccountAuthModel } from './account-auth/account-auth.model';
 import { EmailModule } from './email/email.module';
+import { EmailModel } from './email/email.model';
+
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -36,17 +37,18 @@ const customLogger = (msg: string) => {
       database: process.env.PG_DATABASE,
       autoLoadModels: true,
       synchronize: true,
-      models: [AccountAuthModel],
+      models: [],
       logging: customLogger,
     }),
-    SequelizeModule.forFeature([AccountAuthModel]),
+    EmailModule,
     AccountAuthModule,
     AccountUserModule,
     MenuModule,
     OrderMenuModule,
-    EmailModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+
+export class AppModule {
+}

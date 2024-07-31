@@ -48,13 +48,14 @@ export class AccountAuthService {
 
   async recoverPassword(email: string): Promise<void> {
     const account = this.accountModel.findOne({
+      rejectOnEmpty: undefined,
       where:{
         email: email
       }
     })
 
-    if(account){
-     await this.emailService.sendMail(email)
+    if(account !== undefined){
+     await this.emailService.sendRefactorCodeMail(email)
     }
 
     throw new HttpException( 'Account not Found', HttpStatus.BAD_REQUEST);

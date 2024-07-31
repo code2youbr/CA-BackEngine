@@ -18,7 +18,7 @@ export class EmailService {
     });
   }
 
-  async sendMail(to: string) {
+  async sendRefactorCodeMail(to: string) {
     const recoveryKey = this.generateVerificationCode()
 
     const mailOptions = {
@@ -36,7 +36,8 @@ export class EmailService {
     }
   }
 
+  //creates a code of 6 random numbers
   generateVerificationCode(): string {
-    return crypto.randomBytes(3).toString('hex'); // Gera um código de 6 caracteres em hexadecimal
+    return crypto.randomBytes(3).toString('hex');
   }
 }

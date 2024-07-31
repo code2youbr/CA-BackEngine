@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
-import { Column, Model, Table, PrimaryKey, AllowNull } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, AllowNull, BelongsTo, ForeignKey } from 'sequelize-typescript';
+import { AccountAuthModel } from '../account-auth/account-auth.model';
 
 @Table({
   tableName: 'email',
@@ -7,10 +8,12 @@ import { Column, Model, Table, PrimaryKey, AllowNull } from 'sequelize-typescrip
 
 export class EmailModel extends Model{
   @PrimaryKey
-  @AllowNull
+  @ForeignKey(() => AccountAuthModel)
   @Column({
     type: DataTypes.INTEGER,
   })
   recovery_key: number;
 
+  @BelongsTo(() => AccountAuthModel)
+  accountAuth: AccountAuthModel;
 }
