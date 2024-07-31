@@ -5,9 +5,9 @@ services:
     image: postgres:13
     container_name: ca-backengine-db
     environment:
-      POSTGRES_USER: gabriel
-      POSTGRES_PASSWORD: gabriel12
-      POSTGRES_DB: ca_backengine
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DATABASE}
     ports:
       - '5432:5432'
     volumes:
@@ -17,11 +17,11 @@ services:
     build: .
     container_name: ca-backengine-app
     environment:
-      PG_HOST: db
-      PG_PORT: 5432
-      PG_USER: gabriel
-      PG_PASSWORD: gabriel12
-      PG_DATABASE: ca_backengine
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_DATABASE: ${PG_DATABASE}
     ports:
       - '3000:3000'
     depends_on:

@@ -12,7 +12,13 @@ export class EmailModel extends Model{
   @Column({
     type: DataTypes.INTEGER,
   })
-  recovery_key: number;
+  id: number;
+
+  @Column({
+    type: DataTypes.STRING,
+    allowNull: false,
+  })
+  recovery_key: string;
 
   @BelongsTo(() => AccountAuthModel)
   accountAuth: AccountAuthModel;

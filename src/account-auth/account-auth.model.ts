@@ -32,7 +32,7 @@ export class AccountAuthModel extends Model {
   email: string;
 
   @HasOne(() => EmailModel, {
-    foreignKey: 'recovery_key',
+    foreignKey: 'id',
   })
   recoveryKey: EmailModel;
 

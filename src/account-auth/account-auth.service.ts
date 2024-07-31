@@ -15,10 +15,6 @@ export class AccountAuthService {
   ) {}
   logger = new Logger(AccountAuthService.name);
 
-  generateVerificationCode(): string {
-    return crypto.randomBytes(3).toString('hex'); // Gera um código de 6 caracteres em hexadecimal
-  }
-
   private async findByUsernameOrEmail(identifier: string): Promise<AccountAuthModel> {
     return this.accountModel.findOne({
       where: {
@@ -42,23 +38,27 @@ export class AccountAuthService {
   }
 
   async login(identifier: string, password: string): Promise<boolean> {
-    const account =await this.findByUsernameOrEmail(identifier);
-    return account.password == Md5.hashStr(password);
+    try{
+      const account = await this.findByUsernameOrEmail(identifier);
+      this.logger.log(account);
+      return account.password == Md5.hashStr(password);
+    }
+    catch(error){
+      this.logger.error(error);
+      throw new HttpException('Login failed', HttpStatus.BAD_REQUEST);
+    }
   }
 
-  async recoverPassword(email: string): Promise<void> {
-    const account = this.accountModel.findOne({
-      rejectOnEmpty: undefined,
-      where:{
-        email: email
+  async sendRecoveryCode(email: string): Promise<void> {
+    try{
+      const account =await this.findByUsernameOrEmail(email)
+
+      if (account) {
+        await this.emailService.sendRefactorCodeMail(email, account);
       }
-    })
-
-    if(account !== undefined){
-     await this.emailService.sendRefactorCodeMail(email)
-    }
-
+    }catch{
     throw new HttpException( 'Account not Found', HttpStatus.BAD_REQUEST);
+    }
   }
   //todo: method to change password
   // Create a model that can save this number to verify later

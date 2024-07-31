@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post, Req } f
 import { AccountAuthService } from './account-auth.service';
 import { CreateAndAccessDto } from './types/CreateAndAccessDto';
 import { AccessDto } from '@app/account-auth/types/AccessDto';
+import { UpdateDto } from '@app/account-auth/types/updateDto';
 
 @Controller('account-auth')
 export class AccountAuthController {
@@ -28,9 +29,10 @@ export class AccountAuthController {
   }
 
   @Post('update')
-  async changePassword(@Body() email:string):Promise<string> {
+  async changePassword(@Body() updateDto :UpdateDto):Promise<string> {
     try{
-      await this.service.recoverPassword(email)
+      const { email } = updateDto;
+      await this.service.sendRecoveryCode(email)
       return 'ok';
     }catch(error){
       this.logger.error(error);
