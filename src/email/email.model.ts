@@ -11,6 +11,7 @@ export class EmailModel extends Model{
   @ForeignKey(() => AccountAuthModel)
   @Column({
     type: DataTypes.INTEGER,
+    autoIncrement: true,
   })
   id: number;
 
@@ -19,6 +20,14 @@ export class EmailModel extends Model{
     allowNull: false,
   })
   recovery_key: string;
+
+  @ForeignKey(() => AccountAuthModel)
+  @Column({
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  })
+  accountAuthId: number;
+
 
   @BelongsTo(() => AccountAuthModel)
   accountAuth: AccountAuthModel;

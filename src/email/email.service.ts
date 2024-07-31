@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import * as crypto from 'crypto';
 import { InjectModel } from '@nestjs/sequelize';
-import { EmailModel } from '@app/email/email.model';
-import { AccountAuthModel } from '@app/account-auth/account-auth.model';
+import { EmailModel } from './email.model';
+import { AccountAuthModel } from '../account-auth/account-auth.model';
 
 @Injectable()
 export class EmailService {
@@ -35,9 +35,12 @@ export class EmailService {
     try {
       //const info = await this.transporter.sendMail(mailOptions);
       const info ="ok"
-     // this.logger.log('Email send: ' + info.response);
-        this.logger.log(JSON.stringify(accountAuth, null, 2));
+      // this.logger.log('Email send: ' + info.response);
+      this.logger.log(JSON.stringify(accountAuth, null, 2));
+      this.logger.log(accountAuth.id)
       if(info){
+        const emailModel = await this.emailModel.findOne({where: {accountAuthId: accountAuth.id}});
+        this.logger.log(emailModel);
         await this.emailModel.create({
           recovery_key: recoveryKey,
           accountAuthId: accountAuth.id
@@ -47,6 +50,12 @@ export class EmailService {
       console.error('Error sending email: ' + error);
     }
 
+  }
+
+  async findEmailByAccountAuthId(accountAuthId: number): Promise<EmailModel | null> {
+    return await this.emailModel.findOne({
+      where: { accountAuthId }
+    });
   }
 
   //creates a code of 6 random numbers

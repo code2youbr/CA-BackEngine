@@ -16,7 +16,7 @@ module.exports = {
       accountAuthId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'account_auth', // Nome da tabela AccountAuthModel
+          model: 'account_auth',
           key: 'id',
         },
         onUpdate: 'CASCADE',
