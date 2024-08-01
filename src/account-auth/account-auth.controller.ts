@@ -22,8 +22,8 @@ export class AccountAuthController {
   @Post('login')
   async loginAccount(@Body() accessDto: AccessDto){
     try{
-      const {identifier, password} = accessDto;
-      return await this.service.login(identifier, password);
+      const {email, password} = accessDto;
+      return await this.service.login(email, password);
     }
     catch(error){
       this.logger.error(error);

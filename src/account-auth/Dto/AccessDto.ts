@@ -3,12 +3,12 @@ import { ApiProperty } from '@nestjs/swagger'
 
 
 export class AccessDto {
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   @ApiProperty({
     required: true,
   })
-  identifier: string;
+  email: string;
 
   @IsNotEmpty()
   @IsString()

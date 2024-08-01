@@ -15,19 +15,18 @@ export class AccountAuthService {
   ) {}
   logger = new Logger(AccountAuthService.name);
 
-  //change this later for security
-  private async findByUsernameOrEmail(identifier: string): Promise<AccountAuthModel> {
+  private async findByEmail(email: string): Promise<AccountAuthModel> {
     return this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
-        [Op.or]: [{ username: identifier }, { email: identifier }],
+        email: email,
         isDeleted: false,
       }
     });
   }
 
   async createAccount(username: string, password: string, email: string): Promise<void> {
-    const account = await this.findByUsernameOrEmail(email);
+    const account = await this.findByEmail(email);
 
     if(account){
       throw new HttpException('Account already exists', HttpStatus.BAD_REQUEST);
@@ -41,9 +40,9 @@ export class AccountAuthService {
     })
   }
 
-  async login(identifier: string, password: string): Promise<boolean> {
+  async login(email: string, password: string): Promise<boolean> {
     try{
-      const account = await this.findByUsernameOrEmail(identifier);
+      const account = await this.findByEmail(email);
       return account.password == Md5.hashStr(password);
     }
     catch(error){
@@ -53,7 +52,7 @@ export class AccountAuthService {
 
   async sendRecoveryCode(email: string): Promise<void> {
     try{
-      const account =await this.findByUsernameOrEmail(email)
+      const account =await this.findByEmail(email)
 
       if (account) {
         await this.emailService.sendRefactorCodeMail(email, account);
@@ -64,7 +63,7 @@ export class AccountAuthService {
   }
 
   async changePassword(newPassword: string, email, refactorCode): Promise<void> {
-    const account = await this.findByUsernameOrEmail(email);
+    const account = await this.findByEmail(email);
     if(!account){
       throw new HttpException('Account not Found', HttpStatus.BAD_REQUEST);
     }
@@ -79,7 +78,7 @@ export class AccountAuthService {
   }
 
   async deactivateAccount(email: string, password: string, ): Promise<void> {
-    const account = await this.findByUsernameOrEmail(email);
+    const account = await this.findByEmail(email);
     if(account.password == Md5.hashStr(password)){
       await account.update({
         isDeleted: true,
