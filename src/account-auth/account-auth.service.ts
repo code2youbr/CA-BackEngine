@@ -3,7 +3,7 @@ import {Md5} from 'ts-md5';
 import { AccountAuthModel } from './account-auth.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
-import { EmailService } from '@app/email/email.service';
+import { EmailService } from '../email/email.service';
 import * as crypto from 'crypto';
 
 
@@ -15,6 +15,7 @@ export class AccountAuthService {
   ) {}
   logger = new Logger(AccountAuthService.name);
 
+  //change this later for security
   private async findByUsernameOrEmail(identifier: string): Promise<AccountAuthModel> {
     return this.accountModel.findOne({
       where: {
@@ -60,6 +61,21 @@ export class AccountAuthService {
     throw new HttpException( 'Account not Found', HttpStatus.BAD_REQUEST);
     }
   }
-  //todo: method to change password
-  // Create a model that can save this number to verify later
+
+  async changePassword(newPassword: string, email, refactorCode): Promise<void> {
+    const account = await this.findByUsernameOrEmail(email);
+    if(!account){
+      throw new HttpException('Account not Found', HttpStatus.BAD_REQUEST);
+    }
+    const verifiedCode = await this.emailService.verifyCode(account, refactorCode);
+    if(verifiedCode){
+      await account.update({
+        password: newPassword,
+      })
+      return
+    }
+    throw new HttpException('refactor code does not match in database', HttpStatus.BAD_REQUEST);
+  }
+
+
 }

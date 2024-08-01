@@ -29,22 +29,25 @@ export class EmailService {
       from: this.configService.get<string>('EMAIL_USER'),
       to: to,
       subject: "Código para trocar sua senha",
-      text: `Aqui está o seu código que permite trocar a senha \n               ${recoveryKey} \n\nse não foi você que pediu ignore esta mensagem`,
+      text: `Use esse codigo para trocar a senha da sua conta\n               ${recoveryKey} \n\nse não foi você que pediu ignore esta mensagem`,
     };
 
     try {
-      //const info = await this.transporter.sendMail(mailOptions);
-      const info ="ok"
-      // this.logger.log('Email send: ' + info.response);
-      this.logger.log(JSON.stringify(accountAuth, null, 2));
-      this.logger.log(accountAuth.id)
+      const info = await this.transporter.sendMail(mailOptions)
+
       if(info){
-        const emailModel = await this.emailModel.findOne({where: {accountAuthId: accountAuth.id}});
-        this.logger.log(emailModel);
-        await this.emailModel.create({
+        const emailCode = await this.emailModel.findOne({ rejectOnEmpty: undefined, where: {accountAuthId: accountAuth.id}});
+        if(!emailCode){
+          await this.emailModel.create({
+            recovery_key: recoveryKey,
+            accountAuthId: accountAuth.id
+          })
+          return
+        }
+        await emailCode.update({
           recovery_key: recoveryKey,
-          accountAuthId: accountAuth.id
         })
+        return
       }
     } catch (error) {
       console.error('Error sending email: ' + error);
@@ -52,15 +55,19 @@ export class EmailService {
 
   }
 
-  async findEmailByAccountAuthId(accountAuthId: number): Promise<EmailModel | null> {
-    return await this.emailModel.findOne({
-      where: { accountAuthId }
+  async verifyCode(accountAuth: AccountAuthModel, refactorCode): Promise<boolean> {
+    const code = await this.emailModel.findOne({
+      rejectOnEmpty: undefined,
+      where: { recovery_key: refactorCode, accountAuthId: accountAuth.id },
     });
+    if(code){
+      return true;
+    }
   }
 
   //creates a code of 6 random numbers
   generateVerificationCode(): number {
-    const randomBytes = crypto.randomBytes(3);
-    return  randomBytes.readUIntBE(0, 3);
+    const randomBytes = crypto.randomBytes(2);
+    return  randomBytes.readUIntBE(0, 2)
   }
 }

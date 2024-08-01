@@ -1,8 +1,9 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post, Req } from '@nestjs/common';
 import { AccountAuthService } from './account-auth.service';
 import { CreateAndAccessDto } from './types/CreateAndAccessDto';
-import { AccessDto } from '@app/account-auth/types/AccessDto';
-import { UpdateDto } from '@app/account-auth/types/updateDto';
+import { AccessDto } from './types/AccessDto';
+import { SendCodeDto } from './types/sendCodeDto';
+import { UpdadeDto } from './types/updadeDto';
 
 @Controller('account-auth')
 export class AccountAuthController {
@@ -28,15 +29,26 @@ export class AccountAuthController {
     }
   }
 
-  @Post('update')
-  async changePassword(@Body() updateDto :UpdateDto):Promise<string> {
+  @Post('sendCode')
+  async sendCode(@Body() sendCodeDto :SendCodeDto):Promise<string> {
     try{
-      const { email } = updateDto;
+      const { email } = sendCodeDto;
       await this.service.sendRecoveryCode(email)
       return 'ok';
     }catch(error){
       this.logger.error(error);
       throw HttpStatus.BAD_REQUEST;
+    }
+  }
+
+  @Post('updatePassword')
+  async updatePassword(@Body() updateDto: UpdadeDto):Promise<string> {
+    try{
+      const { newPassword, email, refactorCode } = updateDto;
+      await this.service.changePassword(newPassword, email, refactorCode);
+      return 'ok';
+    }catch (e){
+      throw new HttpException('Error changing password', HttpStatus.BAD_REQUEST);
     }
   }
 

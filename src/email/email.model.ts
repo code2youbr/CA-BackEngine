@@ -8,7 +8,6 @@ import { AccountAuthModel } from '../account-auth/account-auth.model';
 
 export class EmailModel extends Model{
   @PrimaryKey
-  @ForeignKey(() => AccountAuthModel)
   @Column({
     type: DataTypes.INTEGER,
     autoIncrement: true,
