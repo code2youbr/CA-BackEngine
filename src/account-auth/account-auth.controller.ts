@@ -1,9 +1,10 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post, Req } from '@nestjs/common';
 import { AccountAuthService } from './account-auth.service';
-import { CreateAndAccessDto } from './types/CreateAndAccessDto';
-import { AccessDto } from './types/AccessDto';
-import { SendCodeDto } from './types/sendCodeDto';
-import { UpdadeDto } from './types/updadeDto';
+import { CreateAndAccessDto } from './Dto/CreateAndAccessDto';
+import { AccessDto } from './Dto/AccessDto';
+import { SendCodeDto } from './Dto/sendCodeDto';
+import { UpdadeDto } from './Dto/updadeDto';
+import { DeleteDto } from './Dto/deleteDto';
 
 @Controller('account-auth')
 export class AccountAuthController {
@@ -49,6 +50,17 @@ export class AccountAuthController {
       return 'ok';
     }catch (e){
       throw new HttpException('Error changing password', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('delete')
+  async deleteAccount(@Body() deleteDto: DeleteDto):Promise<string>{
+    try{
+      const { email, password } = deleteDto;
+      await this.service.deactivateAccount(email, password);
+      return 'ok';
+    }catch(e){
+      throw new HttpException('Error deleting account', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

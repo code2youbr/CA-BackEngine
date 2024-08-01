@@ -18,9 +18,11 @@ export class AccountAuthService {
   //change this later for security
   private async findByUsernameOrEmail(identifier: string): Promise<AccountAuthModel> {
     return this.accountModel.findOne({
+      rejectOnEmpty: undefined,
       where: {
         [Op.or]: [{ username: identifier }, { email: identifier }],
-      },
+        isDeleted: false,
+      }
     });
   }
 
@@ -34,18 +36,17 @@ export class AccountAuthService {
     await this.accountModel.create({
       username,
       password: Md5.hashStr(password),
-      email
+      email,
+      isDeleted: false,
     })
   }
 
   async login(identifier: string, password: string): Promise<boolean> {
     try{
       const account = await this.findByUsernameOrEmail(identifier);
-      this.logger.log(account);
       return account.password == Md5.hashStr(password);
     }
     catch(error){
-      this.logger.error(error);
       throw new HttpException('Login failed', HttpStatus.BAD_REQUEST);
     }
   }
@@ -75,6 +76,18 @@ export class AccountAuthService {
       return
     }
     throw new HttpException('refactor code does not match in database', HttpStatus.BAD_REQUEST);
+  }
+
+  async deactivateAccount(email: string, password: string, ): Promise<void> {
+    const account = await this.findByUsernameOrEmail(email);
+    if(account.password == Md5.hashStr(password)){
+      await account.update({
+        isDeleted: true,
+      })
+      return
+    }
+    throw new HttpException('fail to deactivate account', HttpStatus.BAD_REQUEST);
+
   }
 
 

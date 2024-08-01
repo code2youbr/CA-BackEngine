@@ -31,6 +31,12 @@ export class AccountAuthModel extends Model {
   })
   email: string;
 
+  @Column({
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  })
+  isDeleted: boolean;
+
   @HasOne(() => EmailModel, {
     foreignKey: 'accountAuthId',
   })
