@@ -42,16 +42,6 @@ export class AccountAuthController {
     }
   }
 
-  @Post('updatePassword')
-  async updatePassword(@Body() updateDto: UpdadeDto):Promise<string> {
-    try{
-      const { newPassword, email, refactorCode } = updateDto;
-      await this.service.changePassword(newPassword, email, refactorCode);
-      return 'ok';
-    }catch (e){
-      throw new HttpException('Error changing password', HttpStatus.BAD_REQUEST);
-    }
-  }
 
   @Post('delete')
   async deleteAccount(@Body() deleteDto: DeleteDto):Promise<string>{

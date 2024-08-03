@@ -8,8 +8,6 @@ export class AccountUserService {
   constructor(@InjectModel(AccountUserModel) private accountModel: typeof AccountUserModel) {
   }
 
-  //todo: Criar table para armazenar: idade, cpf, endereço, telefone
-  // criar serviço para alterar
   async getAccountUser(email: string): Promise<AccountUserModel> {
     return await this.accountModel.findOne({
       rejectOnEmpty: undefined,
@@ -19,9 +17,36 @@ export class AccountUserService {
       include: [
         {
           model: AccountAuthModel,
-          as: 'accountAuth',
+          as: 'accountUserId',
         },
       ],
     });
   }
+
+
+  async createAccountUser(username: string ,email: string): Promise<AccountUserModel> {
+    return await this.accountModel.create({
+      name: username,
+      email: email,
+    })
+  }
+
+  async updateAccountUser(email: string, newEmail?: string, telephoneNumber?:number ): Promise<void> {
+    const account = await this.getAccountUser(email)
+    if(account){
+      const updateData: any = {};
+
+      if (newEmail !== undefined) {
+        updateData.email = newEmail;
+      }
+
+      if (telephoneNumber !== undefined) {
+        updateData.telephoneNumber = telephoneNumber;
+      }
+
+      await account.update(updateData);
+    }
+  }
+
+
 }

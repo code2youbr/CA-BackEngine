@@ -28,9 +28,15 @@ export class AccountUserModel extends Model {
 
   @Column({
     allowNull: true,
-    type: DataTypes.STRING,
+    type: DataTypes.NUMBER,
   })
-  telephoneNumber: string
+  telephoneNumber: number
+
+  @Column({
+    allowNull: false,
+    type: DataTypes.ENUM,
+  })
+  role: 
 
   @Column({
     type: DataTypes.BOOLEAN,

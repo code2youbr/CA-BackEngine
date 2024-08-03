@@ -20,7 +20,7 @@ module.exports = {
         unique: true,
       },
       telephoneNumber: {
-        type: Sequelize.STRING,
+        type: Sequelize.NUMBER,
         allowNull: true,
       },
       isDeleted: {
