@@ -27,7 +27,6 @@ export class EmailModel extends Model{
   })
   accountAuthId: number;
 
-
   @BelongsTo(() => AccountAuthModel)
   accountAuth: AccountAuthModel;
 }

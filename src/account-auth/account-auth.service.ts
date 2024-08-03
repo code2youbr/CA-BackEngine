@@ -5,13 +5,15 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { EmailService } from '../email/email.service';
 import * as crypto from 'crypto';
+import { AccountUserService } from '../account-user/account-user.service';
 
 
 @Injectable()
 export class AccountAuthService {
   constructor(
     @InjectModel(AccountAuthModel) private accountModel: typeof AccountAuthModel,
-    readonly emailService: EmailService
+    readonly emailService: EmailService,
+    readonly accountUserService: AccountUserService,
   ) {}
   logger = new Logger(AccountAuthService.name);
 
@@ -24,7 +26,7 @@ export class AccountAuthService {
       }
     });
   }
-
+  //todo: change this to new version of account user
   async createAccount(username: string, password: string, email: string): Promise<void> {
     const account = await this.findByEmail(email);
 
@@ -40,6 +42,7 @@ export class AccountAuthService {
     })
   }
 
+  //todo: change this to new version of account user
   async login(email: string, password: string): Promise<boolean> {
     try{
       const account = await this.findByEmail(email);
@@ -62,6 +65,7 @@ export class AccountAuthService {
     }
   }
 
+  //todo: change this to new version of account user
   async changePassword(newPassword: string, email, refactorCode): Promise<void> {
     const account = await this.findByEmail(email);
     if(!account){
@@ -77,6 +81,7 @@ export class AccountAuthService {
     throw new HttpException('refactor code does not match in database', HttpStatus.BAD_REQUEST);
   }
 
+  //todo: change this to new version of account user
   async deactivateAccount(email: string, password: string, ): Promise<void> {
     const account = await this.findByEmail(email);
     if(account.password == Md5.hashStr(password)){

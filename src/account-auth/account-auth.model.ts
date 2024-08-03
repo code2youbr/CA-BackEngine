@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
-import { Column, Model, Table, PrimaryKey, AutoIncrement, HasOne } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, AutoIncrement, HasOne, BelongsTo, ForeignKey } from 'sequelize-typescript';
 import { EmailModel } from '../email/email.model';
+import { AccountUserModel } from '../account-user/account-user.model';
 
 @Table({
   tableName: 'account_auth',
@@ -17,29 +18,21 @@ export class AccountAuthModel extends Model {
     allowNull: false,
     type: DataTypes.STRING,
   })
-  username: string;
-
-  @Column({
-    allowNull: false,
-    type: DataTypes.STRING,
-  })
   password: string;
-
-  @Column({
-    allowNull: false,
-    type: DataTypes.STRING,
-  })
-  email: string;
-
-  @Column({
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  })
-  isDeleted: boolean;
 
   @HasOne(() => EmailModel, {
     foreignKey: 'accountAuthId',
   })
   recoveryKey: EmailModel;
+
+  @ForeignKey(() => AccountUserModel)
+  @Column({
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  })
+  accountUserId: number;
+
+  @BelongsTo(() => AccountUserModel)
+  accountUser: AccountUserModel;
 
 }

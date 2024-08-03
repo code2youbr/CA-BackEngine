@@ -3,25 +3,30 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('account_auth', {
+    await queryInterface.createTable('account_user', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+        allowNull: false,
       },
-      password: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      accountUserId: {
-        type: Sequelize.INTEGER,
+      email: {
+        type: Sequelize.STRING,
         allowNull: false,
-        references: {
-          model: 'account_user', // Nome da tabela referenciada
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+        unique: true,
+      },
+      telephoneNumber: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -35,19 +40,19 @@ module.exports = {
       },
     });
 
-    await queryInterface.addColumn('email', 'accountAuthId', {
+    await queryInterface.addColumn('account_auth', 'accountUserId', {
       type: Sequelize.INTEGER,
       references: {
-        model: 'account_auth',
+        model: 'account_user',
         key: 'id',
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
+      onDelete: 'CASCADE',
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('email', 'accountAuthId');
-    await queryInterface.dropTable('account_auth');
+    await queryInterface.removeColumn('account_auth', 'accountUserId');
+    await queryInterface.dropTable('account_user');
   }
 };
