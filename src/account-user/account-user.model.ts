@@ -33,10 +33,10 @@ export class AccountUserModel extends Model {
   telephoneNumber: number
 
   @Column({
-    allowNull: false,
-    type: DataTypes.ENUM,
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   })
-  role: 
+  isAdmin: boolean
 
   @Column({
     type: DataTypes.BOOLEAN,

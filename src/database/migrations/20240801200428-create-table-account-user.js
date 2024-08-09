@@ -23,6 +23,11 @@ module.exports = {
         type: Sequelize.NUMBER,
         allowNull: true,
       },
+      isAdmin: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
       isDeleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,

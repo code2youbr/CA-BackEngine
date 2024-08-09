@@ -23,7 +23,6 @@ export class AccountUserService {
     });
   }
 
-
   async createAccountUser(username: string ,email: string): Promise<AccountUserModel> {
     return await this.accountModel.create({
       name: username,
