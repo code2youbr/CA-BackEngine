@@ -27,10 +27,22 @@ export class AccountUserModel extends Model {
   email: string
 
   @Column({
-    allowNull: true,
+    allowNull: false,
     type: DataTypes.NUMBER,
   })
   telephoneNumber: number
+
+  @Column({
+    allowNull: false,
+    type: DataTypes.NUMBER,
+  })
+  cpfCnpj: number
+
+  @Column({
+    allowNull: false,
+    type: DataTypes.BOOLEAN,
+  })
+  isLegalPerson: boolean
 
   @Column({
     type: DataTypes.BOOLEAN,
@@ -43,6 +55,8 @@ export class AccountUserModel extends Model {
     defaultValue: false,
   })
   isDeleted: boolean
+
+
 
   @HasOne(() => AccountAuthModel, {
     foreignKey: 'accountUserId',

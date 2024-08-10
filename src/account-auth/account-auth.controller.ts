@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post, Req } from '@nestjs/common';
 import { AccountAuthService } from './account-auth.service';
-import { CreateAndAccessDto } from './Dto/CreateAndAccessDto';
+import { CreateDto } from './Dto/CreateDto';
 import { AccessDto } from './Dto/AccessDto';
 import { SendCodeDto } from './Dto/sendCodeDto';
 import { UpdadeDto } from './Dto/updadeDto';
@@ -11,13 +11,6 @@ export class AccountAuthController {
   constructor(readonly service: AccountAuthService) {
   }
   logger = new Logger(AccountAuthController.name);
-
-  @Post('create')
-  async createAccount(@Body() createDto: CreateAndAccessDto):Promise<string> {
-    const { username, password, email } = createDto;
-    await this.service.createAccount(username, password, email);
-    return 'ok';
-  }
 
   @Post('login')
   async loginAccount(@Body() accessDto: AccessDto){
@@ -42,15 +35,14 @@ export class AccountAuthController {
     }
   }
 
-
-  @Post('delete')
-  async deleteAccount(@Body() deleteDto: DeleteDto):Promise<string>{
-    try{
-      const { email, password } = deleteDto;
-      await this.service.deactivateAccount(email, password);
+  @Post('changePassword')
+  async changePassword(@Body() newPassword: string, email:string, refactorCode:number):Promise<string>{
+    try {
+      await this.service.changePassword(newPassword, email, refactorCode);
       return 'ok';
-    }catch(e){
-      throw new HttpException('Error deleting account', HttpStatus.INTERNAL_SERVER_ERROR);
+    }catch(error){
+      this.logger.error(error);
+      throw HttpStatus.BAD_REQUEST;
     }
   }
 

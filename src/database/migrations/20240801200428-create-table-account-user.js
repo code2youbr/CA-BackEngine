@@ -21,7 +21,15 @@ module.exports = {
       },
       telephoneNumber: {
         type: Sequelize.NUMBER,
-        allowNull: true,
+        allowNull: false,
+      },
+      cpfCnpj: {
+        type: Sequelize.NUMBER,
+        allowNull: false,
+      },
+      isLegalPerson: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
       },
       isAdmin: {
         type: Sequelize.BOOLEAN,

@@ -8,6 +8,7 @@ import { AccountUserModule } from './account-user/account-user.module';
 import { MenuModule } from './menu/menu.module';
 import { OrderMenuModule } from './order-menu/order-menu.module';
 import { EmailModule } from './email/email.module';
+import { PagbankModule } from './pagbank/pagbank.module';
 import * as process from 'process'
 
 
@@ -42,6 +43,7 @@ const customLogger = (msg: string) => {
     AccountUserModule,
     MenuModule,
     OrderMenuModule,
+    PagbankModule,
   ],
   controllers: [AppController],
   providers: [AppService],
