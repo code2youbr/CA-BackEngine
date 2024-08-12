@@ -41,6 +41,7 @@ export class MenuService {
         price,
         available,
       })
+      return
     }
 
     throw new HttpException('User dont have privilege', HttpStatus.UNAUTHORIZED)
@@ -76,7 +77,10 @@ export class MenuService {
           existingMenu.available = false;
         }
       }
+      return
     }
+    throw new HttpException('User dont have privilege', HttpStatus.UNAUTHORIZED)
+
   }
 
   async removeMeal(name: string, userId: number){
@@ -90,6 +94,8 @@ export class MenuService {
       if (existingMenu) {
         await existingMenu.destroy()
       }
+      return
     }
+    throw new HttpException('User dont have privilege', HttpStatus.UNAUTHORIZED)
   }
 }
