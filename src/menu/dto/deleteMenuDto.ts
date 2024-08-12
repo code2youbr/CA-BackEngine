@@ -8,4 +8,12 @@ export class deleteMenuDto {
     required: true,
   })
   name: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    required: true,
+  })
+  UserId: number
+
 }

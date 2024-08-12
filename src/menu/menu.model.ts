@@ -1,32 +1,47 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
-import { DescriptionType } from './types/descriptionType'
+import { DataTypes } from 'sequelize';
+import { Column, Model, Table, PrimaryKey, AutoIncrement, HasOne, ForeignKey } from 'sequelize-typescript';
+import { AccountUserModel } from '../account-user/account-user.model';
+
 @Table({
-  tableName: 'meals',
-  timestamps: true,
+  tableName: 'menu',
 })
-export class MenuModel extends Model{
+export class MenuModel extends Model {
+  @PrimaryKey
+  @AutoIncrement
   @Column({
-    type: DataType.STRING,
+    type: DataTypes.INTEGER,
+  })
+  id: number
+
+  @Column({
     allowNull: false,
+    type: DataTypes.STRING,
   })
-  name: string;
+  name: string
 
   @Column({
-    type: DataType.JSONB,
-    allowNull: true,
-  })
-  description: DescriptionType;
-
-  @Column({
-    type: DataType.FLOAT,
     allowNull: false,
+    type: DataTypes.STRING,
   })
-  price: number;
+  description: string
 
   @Column({
-    type: DataType.BOOLEAN,
+    allowNull: false,
+    type: DataTypes.STRING,
+  })
+  image: string
+
+
+  @Column({
+    allowNull: false,
+    type: DataTypes.NUMBER,
+  })
+  price: number
+
+  @Column({
     allowNull: false,
     defaultValue: true,
+    type: DataTypes.BOOLEAN,
   })
-  available: boolean;
+  available: boolean
 }

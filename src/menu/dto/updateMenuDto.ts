@@ -1,13 +1,18 @@
-import { IsString, IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, IsObject, IsNumber, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger'
 
-export class CreateMenuDto {
-  @IsNotEmpty()
+export class UpdateMenuDto {
   @IsString()
   @ApiProperty({
     required: true,
   })
   name: string;
+
+  @IsString()
+  @ApiProperty({
+    required: true,
+  })
+  newName: string;
 
   @IsString()
   @ApiProperty({
@@ -21,14 +26,12 @@ export class CreateMenuDto {
   })
   image: string;
 
-  @IsNotEmpty()
   @IsNumber()
   @ApiProperty({
     required: true,
   })
   price: number
 
-  @IsNotEmpty()
   @IsBoolean()
   @ApiProperty({
     default: true,
@@ -41,4 +44,5 @@ export class CreateMenuDto {
     required: true,
   })
   UserId: number
+
 }

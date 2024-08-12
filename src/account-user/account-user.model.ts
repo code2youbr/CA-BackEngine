@@ -56,8 +56,6 @@ export class AccountUserModel extends Model {
   })
   isDeleted: boolean
 
-
-
   @HasOne(() => AccountAuthModel, {
     foreignKey: 'accountUserId',
   })

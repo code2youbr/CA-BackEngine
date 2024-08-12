@@ -17,7 +17,7 @@ export class AccountAuthService {
   logger = new Logger(AccountAuthService.name);
 
   private async findByEmail(email: string) {
-    return this.accountUserService.getAccountUser(email)
+    return this.accountUserService.getAccountUserByEmail(email)
   }
 
   async createPassword( password: string, email: string): Promise<void> {

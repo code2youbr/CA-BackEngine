@@ -12,7 +12,7 @@ export class AccountUserService {
     private readonly accountAuthService: AccountAuthService,
     ) {}
 
-  async getAccountUser(email: string): Promise<AccountUserModel> {
+  async getAccountUserByEmail(email: string): Promise<AccountUserModel> {
     return await this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
@@ -27,6 +27,15 @@ export class AccountUserService {
     });
   }
 
+  async getAccountUserById(UserId: number){
+    return this.accountModel.findOne({
+      rejectOnEmpty: undefined,
+      where: {
+        id: UserId
+      }
+    })
+  }
+
   async createAccountUser(username: string, password: string ,email: string, cpfCnpj: string): Promise<void> {
      await this.accountModel.create({
       name: username,
@@ -38,7 +47,7 @@ export class AccountUserService {
   }
 
   async updateAccountUser(email: string, newEmail?: string, telephoneNumber?:number ): Promise<void> {
-    const account = await this.getAccountUser(email)
+    const account = await this.getAccountUserByEmail(email)
     if(account){
       const updateData: any = {};
 

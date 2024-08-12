@@ -14,7 +14,11 @@ module.exports = {
         allowNull: false,
       },
       description: {
-        type: Sequelize.JSONB,
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      image: {
+        type: Sequelize.STRING,
         allowNull: true,
       },
       price: {
@@ -36,6 +40,7 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
+
     });
   },
 
