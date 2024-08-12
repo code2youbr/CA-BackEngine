@@ -1,12 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { MenuModel } from './menu.model';
-import { CreateMenuDto } from './dto/createMenuDto';
-import { deleteMenuDto } from './dto/deleteMenuDto';
 import { AccountUserService } from '../account-user/account-user.service';
 
 @Injectable()
 export class MenuService {
+
   constructor(
     @InjectModel(MenuModel) private menuModel: typeof MenuModel,
     private readonly accountUserService: AccountUserService,
@@ -18,7 +17,7 @@ export class MenuService {
     return account.isAdmin !== false;
   }
 
-  async getAllMeals() {
+  async getAllMeals():Promise <MenuModel[]> {
     return this.menuModel.findAll()
   }
 
