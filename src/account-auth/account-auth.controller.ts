@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Query, Req, Res } from '@nestjs/common';
 import { AccountAuthService } from './account-auth.service';
-import { CreateDto } from '../account-user/Dto/CreateDto';
+import { CreateDto } from '../account-user/Dto/createDto';
 import { AccessDto } from './Dto/AccessDto';
 import { SendCodeDto } from './Dto/sendCodeDto';
 import { UpdadeDto } from './Dto/updadeDto';
@@ -36,8 +36,9 @@ export class AccountAuthController {
   }
 
   @Post('changePassword')
-  async changePassword(@Body() newPassword: string, email:string, refactorCode:number):Promise<string>{
+  async changePassword(@Body() updateDto: UpdadeDto):Promise<string>{
     try {
+      const { newPassword, email, refactorCode } = updateDto;
       await this.service.changePassword(newPassword, email, refactorCode);
       return 'ok';
     }catch(error){

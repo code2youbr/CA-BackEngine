@@ -1,18 +1,19 @@
 import { Body, Controller, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { AccountUserService } from './account-user.service';
 import { UpdateDto } from './Dto/updateDto'
-import { CreateDto } from './Dto/CreateDto';
+import { CreateDto } from './Dto/createDto';
 import { validateCnpj } from '../shared/helpers/validate-cnpj';
 import { validateCPF } from '../shared/helpers/validate-cpf';
 import { DeleteDto } from './Dto/deleteDto';
+import { AdminManagement } from './Dto/adminManagement';
 
 @Controller('account-user')
 export class AccountUserController {
 
   constructor(private readonly service: AccountUserService) {}
 
-  //TODO: bring create and delete from account-auth to here
 
+  //TODO: TEST this one
   @Post('updateAccount')
   async updateAccount(@Body() updateDto: UpdateDto):Promise<string> {
     try{
@@ -48,6 +49,24 @@ export class AccountUserController {
     const { email, password } = deleteDto;
     await this.service.deactivateAccount(email, password)
     return 'ok'
+  }
+
+  @Post('addAdmin')
+  async addAdmin(@Body() adminManagement: AdminManagement): Promise<string> {
+    const { currentAdminEmail, targetAdminEmail} = adminManagement;
+
+    await this.service.addAdmin(currentAdminEmail, targetAdminEmail)
+
+    return 'ok';
+  }
+
+  @Post('removeAdmin')
+  async removeAdmin(@Body() adminManagement: AdminManagement): Promise<string> {
+    const { currentAdminEmail, targetAdminEmail} = adminManagement;
+
+    await this.service.removeAdmin(currentAdminEmail, targetAdminEmail)
+
+    return 'ok';
   }
 
 }

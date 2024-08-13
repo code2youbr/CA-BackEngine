@@ -16,7 +16,6 @@ export class EmailModel extends Model{
 
   @Column({
     type: DataTypes.STRING,
-    allowNull: false,
   })
   recovery_key: string;
 

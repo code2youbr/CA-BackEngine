@@ -11,7 +11,6 @@ module.exports = {
       },
       recovery_key: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       accountAuthId: {
         type: Sequelize.INTEGER,

@@ -14,11 +14,11 @@ export class AccountUserService {
 
   logger = new Logger(AccountUserService.name);
 
-  async getAccountUserByEmail(email: string): Promise<any> {
+  async getAccountUserByCpfCnpj(cpfCnpj: string): Promise<any> {
     const account = await this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
-        email: email,
+        cpfCnpj: cpfCnpj,
       },
       include: [
         {
@@ -59,18 +59,21 @@ export class AccountUserService {
     }
   }
 
-  //todo: trocar isso assim que o antonio responder, usar o cpf para ser o identificador
-  async updateAccountUser(email: string, name: string, newEmail?: string, telephoneNumber?:number ): Promise<void> {
-    const account = await this.getAccountUserByEmail(email)
+  async updateAccountUser(cpfCnpj: string, email?: string, name?: string, telephoneNumber?:number ): Promise<void> {
+    const account = await this.getAccountUserByCpfCnpj(cpfCnpj)
     if(account){
       const updateData: any = {};
 
-      if (newEmail !== undefined) {
-        updateData.email = newEmail;
+      if (email !== undefined) {
+        updateData.email = email;
       }
 
       if (telephoneNumber !== undefined) {
         updateData.telephoneNumber = telephoneNumber;
+      }
+
+      if (name !== undefined) {
+        updateData.name = name;
       }
 
       await account.update(updateData);
@@ -94,11 +97,10 @@ export class AccountUserService {
     throw new HttpException('fail to deactivate account', HttpStatus.BAD_REQUEST);
   }
 
-  //todo: create a controller to this function
-  async addAdmin(email:string, newAdminEmail:string): Promise<void> {
+  async addAdmin(currentAdminEmail: string, newAdminEmail:string): Promise<void> {
     const account = await this.accountModel.findOne({
       rejectOnEmpty: undefined,
-      where: { email: email }
+      where: { email: currentAdminEmail }
     });
 
     if(account.isAdmin){
@@ -117,7 +119,6 @@ export class AccountUserService {
     throw new HttpException('User dont have privilege', HttpStatus.UNAUTHORIZED)
   }
 
-  //todo: create a controller to this function
   async removeAdmin(currentAdminEmail: string, targetAdminEmail: string): Promise<void> {
     const currentAdminAccount = await this.accountModel.findOne({
       rejectOnEmpty: undefined,

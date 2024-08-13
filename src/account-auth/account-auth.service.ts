@@ -54,12 +54,15 @@ export class AccountAuthService {
       if (account) {
         await this.emailService.sendRefactorCodeMail(email, account);
       }
-    }catch{
-    throw new HttpException( 'Account not Found', HttpStatus.BAD_REQUEST);
+    }
+    catch(error){
+      this.logger.error(error);
+      throw new HttpException( 'Account not Found', HttpStatus.BAD_REQUEST);
     }
   }
 
   async changePassword(newPassword: string, email:string, refactorCode:number): Promise<void> {
+    this.logger.log(email)
     const account = await this.findByEmail(email);
     if(!account){
       throw new HttpException('Account not Found', HttpStatus.BAD_REQUEST);
@@ -67,11 +70,12 @@ export class AccountAuthService {
     const verifiedCode = await this.emailService.verifyCode(account, refactorCode);
 
     if(verifiedCode){
+      const passwordChanged = await account.update({
+        password: Md5.hashStr(newPassword),
+      })
 
-      if(account.password){
-        await account.update({
-          password: newPassword,
-        })
+      if(passwordChanged){
+        await this.emailService.deprecateCode(account.id);
         return
       }
 
