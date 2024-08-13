@@ -8,7 +8,7 @@ export class UpdateDto {
   @ApiProperty({
     required: false,
   })
-  telephoneNumber: number;
+  telephoneNumber: string;
 
   @IsNotEmpty()
   @IsEmail()

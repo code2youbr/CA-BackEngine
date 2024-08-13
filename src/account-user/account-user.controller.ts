@@ -1,10 +1,10 @@
 import { Body, Controller, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { AccountUserService } from './account-user.service';
 import { UpdateDto } from './Dto/updateDto'
-import { CreateDto } from '../account-auth/Dto/CreateDto';
+import { CreateDto } from './Dto/CreateDto';
 import { validateCnpj } from '../shared/helpers/validate-cnpj';
 import { validateCPF } from '../shared/helpers/validate-cpf';
-import { DeleteDto } from '../account-auth/Dto/deleteDto';
+import { DeleteDto } from './Dto/deleteDto';
 
 @Controller('account-user')
 export class AccountUserController {
@@ -13,8 +13,8 @@ export class AccountUserController {
 
   //TODO: bring create and delete from account-auth to here
 
-  @Post('updatePassword')
-  async updatePassword(@Body() updateDto: UpdateDto):Promise<string> {
+  @Post('updateAccount')
+  async updateAccount(@Body() updateDto: UpdateDto):Promise<string> {
     try{
       const { email, telephoneNumber, newEmail } = updateDto;
       await this.service.updateAccountUser(email, newEmail, telephoneNumber);
@@ -26,7 +26,7 @@ export class AccountUserController {
 
   @Post('create')
   async createAccount(@Body() createDto: CreateDto):Promise<string> {
-    const { name, password, email, cpfCnpj, isLegalPerson } = createDto;
+    const { name, password, email, cpfCnpj, telephone, isLegalPerson } = createDto;
 
     if (isLegalPerson) {
       if (!validateCnpj(cpfCnpj)) {
@@ -39,7 +39,7 @@ export class AccountUserController {
     }
     const clearCpfCnpj = cpfCnpj.replace(/[^\d]/g, '')
 
-    await this.service.createAccountUser(name, password, email, clearCpfCnpj);
+    await this.service.createAccountUser(name, password, email, telephone, clearCpfCnpj, isLegalPerson);
     return 'ok';
   }
 
@@ -47,6 +47,7 @@ export class AccountUserController {
   async deactivateAccount(@Body() deleteDto: DeleteDto):Promise<string> {
     const { email, password } = deleteDto;
     await this.service.deactivateAccount(email, password)
+    return 'ok'
   }
 
 }

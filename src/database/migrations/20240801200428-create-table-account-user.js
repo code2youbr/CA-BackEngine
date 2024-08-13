@@ -22,10 +22,12 @@ module.exports = {
       telephoneNumber: {
         type: Sequelize.NUMBER,
         allowNull: false,
+        unique: true
       },
       cpfCnpj: {
         type: Sequelize.NUMBER,
         allowNull: false,
+        unique: true
       },
       isLegalPerson: {
         type: Sequelize.BOOLEAN,

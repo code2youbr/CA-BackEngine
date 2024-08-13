@@ -34,7 +34,7 @@ export class MenuModel extends Model {
 
   @Column({
     allowNull: false,
-    type: DataTypes.NUMBER,
+    type: DataTypes.FLOAT,
   })
   price: number
 

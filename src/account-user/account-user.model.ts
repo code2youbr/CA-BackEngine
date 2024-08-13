@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { Column, Model, Table, PrimaryKey, AutoIncrement, HasOne, ForeignKey } from 'sequelize-typescript';
-import { EmailModel } from '../email/email.model';
+import { Column, Model, Table, PrimaryKey, AutoIncrement, HasOne } from 'sequelize-typescript';
 import { AccountAuthModel } from '../account-auth/account-auth.model';
 
 @Table({
@@ -23,20 +22,23 @@ export class AccountUserModel extends Model {
   @Column({
     allowNull: false,
     type: DataTypes.STRING,
+    unique: true
   })
   email: string
 
   @Column({
     allowNull: false,
-    type: DataTypes.NUMBER,
+    type: DataTypes.STRING,
+    unique: true
   })
-  telephoneNumber: number
+  telephoneNumber: string
 
   @Column({
     allowNull: false,
-    type: DataTypes.NUMBER,
+    type: DataTypes.STRING,
+    unique: true
   })
-  cpfCnpj: number
+  cpfCnpj: string
 
   @Column({
     allowNull: false,
@@ -59,5 +61,5 @@ export class AccountUserModel extends Model {
   @HasOne(() => AccountAuthModel, {
     foreignKey: 'accountUserId',
   })
-  accountUserId: AccountAuthModel;
+  accountAuth: AccountAuthModel;
 }

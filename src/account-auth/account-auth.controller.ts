@@ -1,10 +1,10 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Query, Req, Res } from '@nestjs/common';
 import { AccountAuthService } from './account-auth.service';
-import { CreateDto } from './Dto/CreateDto';
+import { CreateDto } from '../account-user/Dto/CreateDto';
 import { AccessDto } from './Dto/AccessDto';
 import { SendCodeDto } from './Dto/sendCodeDto';
 import { UpdadeDto } from './Dto/updadeDto';
-import { DeleteDto } from './Dto/deleteDto';
+import { DeleteDto } from '../account-user/Dto/deleteDto';
 
 @Controller('account-auth')
 export class AccountAuthController {

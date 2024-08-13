@@ -8,10 +8,10 @@ import { AccountAuthModule } from '../account-auth/account-auth.module';
 @Module({
   imports: [
     SequelizeModule.forFeature([AccountUserModel]),
-    AccountAuthModule
+    AccountAuthModule,
   ],
   providers: [AccountUserService],
   controllers: [AccountUserController],
-  exports: [AccountUserService]
+  exports: [AccountUserService],
 })
 export class AccountUserModule {}
