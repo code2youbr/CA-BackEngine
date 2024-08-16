@@ -12,7 +12,10 @@ import { PagbankService } from './pagbank.service';
       useFactory: (configService: ConfigService) => {
         return {
           baseURL: configService.get<string>('pagBank.baseUrl'),
-          validateStatus: (status: number) => status < 500
+          validateStatus: (status: number) => status < 500,
+          headers: {
+            Authorization: configService.get<string>('pagBank.apiKey'),
+          }
         }
       }
     })

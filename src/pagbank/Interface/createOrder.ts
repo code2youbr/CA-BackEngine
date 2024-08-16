@@ -1,11 +1,11 @@
-interface OrderRequest {
+export interface OrderRequest {
   reference_id: string;
   customer: Customer;
   items: Item[];
-  qr_codes: QRCode[];
+  qr_codes?: QRCode[];
   shipping: ShippingOrBilling;
   billing: ShippingOrBilling;
-  notification_urls: string[];
+  notification_urls?: string[];
 }
 
 interface Customer {

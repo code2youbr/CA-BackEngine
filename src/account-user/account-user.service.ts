@@ -14,8 +14,8 @@ export class AccountUserService {
 
   logger = new Logger(AccountUserService.name);
 
-  async getAccountUserByCpfCnpj(cpfCnpj: string): Promise<any> {
-    const account = await this.accountModel.findOne({
+  async getAccountUserByCpfCnpj(cpfCnpj: string): Promise<AccountUserModel> {
+    return await this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
         cpfCnpj: cpfCnpj,
@@ -27,7 +27,6 @@ export class AccountUserService {
         },
       ],
     });
-    return JSON.stringify(account, null, 2);
   }
 
   async getAccountUserById(UserId: number){

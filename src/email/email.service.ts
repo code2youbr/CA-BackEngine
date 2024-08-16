@@ -26,6 +26,7 @@ export class EmailService {
   async sendRefactorCodeMail(to: string, accountAuth: AccountAuthModel): Promise<void> {
     const recoveryKey = this.generateVerificationCode()
 
+    //todo: criar uma constante do HTml separado para ficar mais organizado
     const mailOptions = {
       from: this.configService.get<string>('EMAIL_USER'),
       to: to,
