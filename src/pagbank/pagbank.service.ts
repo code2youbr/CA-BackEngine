@@ -51,9 +51,9 @@ export class PagbankService {
       },
       items: items,
       shipping:{
-      street: account.address.street ,
-        number: account.address.number ,
-        complement:  account.address.complement | undefined,
+      street: account.address.street,
+      number: account.address.number,
+      complement:  account.address.complement,
       city:  account.address.city,
       region_code: account.address.region_code,
       country: account.address.country ,
