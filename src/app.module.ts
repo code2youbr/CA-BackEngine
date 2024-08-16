@@ -10,6 +10,7 @@ import { OrderMenuModule } from './order-menu/order-menu.module';
 import { EmailModule } from './email/email.module';
 import { PagbankModule } from './pagbank/pagbank.module';
 import * as process from 'process'
+import Joi from 'joi'
 
 
 const customLogger = (msg: string) => {
@@ -25,6 +26,11 @@ const customLogger = (msg: string) => {
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      validationSchema: Joi.object({
+        EMAIL_USER: Joi.string().required(),
+        EMAIL_PASSWORD: Joi.string().required(),
+        PAGBANK_TOKEN: Joi.string().required(),
+      })
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',

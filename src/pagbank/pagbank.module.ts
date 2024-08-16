@@ -1,7 +1,23 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
+import { HttpModule } from '@nestjs/axios'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { PagbankService } from './pagbank.service';
 
 @Module({
-  providers: [PagbankService]
+  imports: [
+    ConfigModule,
+    HttpModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          baseURL: configService.get<string>('pagBank.baseUrl'),
+          validateStatus: (status: number) => status < 500
+        }
+      }
+    })
+  ],
+  providers: [PagbankService],
+  exports: [PagbankService]
 })
 export class PagbankModule {}
