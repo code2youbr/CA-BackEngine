@@ -1,12 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { OrderRequest } from './Interface/createOrder';
 import { AccountUserService } from '../account-user/account-user.service';
 import { MenuService } from '../menu/menu.service';
 import { splitPhoneNumber } from '../shared/helpers/splitNumber';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class PagbankService {
-  constructor(private accountUserService: AccountUserService, private menuService: MenuService) {}
+  constructor(
+    private accountUserService: AccountUserService,
+    private menuService: MenuService,
+    private httpService: HttpService,
+  ) {}
+
+  private readonly logger = new Logger(PagbankService.name)
+
 
 
   async createOrder(foodIdentifiers: string[], quantities: number[], cpfCnpj: string): Promise<OrderRequest | undefined> {
@@ -52,6 +60,16 @@ export class PagbankService {
       postal_code: account.address.postal_code
       },
     }
+
+    try {
+      const response = await this.httpService.axiosRef.post<OrderRequest>(url, body);
+      return response.data;
+
+    }catch (error) {
+      this.logger.error(error)
+      return undefined
+    }
+
   }
 
   async paymentOrderPix(){
