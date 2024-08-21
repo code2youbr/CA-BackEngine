@@ -15,6 +15,7 @@ export function validateCPF(cpf): boolean {
         cpf == '99999999999'
     )
         return false
+
     // Valida 1o digito
     let add = 0
     for (let i = 0; i < 9; i++) add += parseInt(cpf.charAt(i)) * (10 - i)

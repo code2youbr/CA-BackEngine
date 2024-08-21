@@ -4,6 +4,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { AccountAuthModel } from '../account-auth/account-auth.model';
 import { AccountAuthService } from '../account-auth/account-auth.service';
 import { Md5 } from 'ts-md5';
+import { Address } from './interface/address';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class AccountUserService {
@@ -38,23 +40,39 @@ export class AccountUserService {
     })
   }
 
-  async createAccountUser(username: string, password: string ,email: string, telephone: string , cpfCnpj: string, isLegalPerson): Promise<void> {
-    const account = await this.accountModel.findOne({
-      rejectOnEmpty: undefined,
-      where: {cpfCnpj: cpfCnpj}
+  async createAccountUser(username: string, password: string ,email: string, telephone: string , cpfCnpj: string, isLegalPerson: boolean, address: Address): Promise<void> {
+    const existingAccount = await this.accountModel.findOne({
+      where: {
+        [Op.or]: [
+          { cpfCnpj: cpfCnpj },
+          { email: email },
+          { telephoneNumber: telephone }
+        ]
+      }
     });
 
-    if(!account){
-      const newAccount = await this.accountModel.create({
-        name: username,
-        email: email,
-        cpfCnpj: cpfCnpj,
-        telephoneNumber: telephone,
-        isLegalPerson: isLegalPerson,
-      })
-      if(newAccount){
-        await this.accountAuthService.createPassword(password, newAccount.id)
+    if (existingAccount) {
+      if (existingAccount.cpfCnpj === cpfCnpj) {
+        throw new HttpException('Account with this CPF/CNPJ already exists', HttpStatus.BAD_REQUEST);
       }
+      if (existingAccount.email === email) {
+        throw new HttpException('Account with this email already exists', HttpStatus.BAD_REQUEST);
+      }
+      if (existingAccount.telephoneNumber === telephone) {
+        throw new HttpException('Account with this telephone number already exists', HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    const newAccount = await this.accountModel.create({
+      name: username,
+      email: email,
+      cpfCnpj: cpfCnpj,
+      telephoneNumber: telephone,
+      isLegalPerson: isLegalPerson,
+      address
+    })
+    if(newAccount){
+      await this.accountAuthService.createPassword(password, newAccount.id)
     }
   }
 
@@ -78,6 +96,8 @@ export class AccountUserService {
       await account.update(updateData);
     }
   }
+
+  async changeAddress(address: Address): Promise<void> {}
 
   async deactivateAccount(email: string, password: string, ): Promise<void> {
     const account = await this.accountModel.findOne({

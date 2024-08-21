@@ -1,5 +1,6 @@
-import { IsString, IsEmail, IsNotEmpty,  IsBoolean } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, IsBoolean, IsObject } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger'
+import { Address } from '../interface/address';
 
 
 export class CreateDto {
@@ -43,4 +44,10 @@ export class CreateDto {
     required: true,
   })
   isLegalPerson: boolean
+
+  @IsObject()
+  @ApiProperty({
+    required: true,
+  })
+  address: Address;
 }

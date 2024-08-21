@@ -16,7 +16,6 @@ export class PagbankService {
   private readonly logger = new Logger(PagbankService.name)
 
 
-
   async createOrder(foodIdentifiers: string[], quantities: number[], cpfCnpj: string): Promise<OrderRequest | undefined> {
     const account = await this.accountUserService.getAccountUserByCpfCnpj(cpfCnpj)
 
