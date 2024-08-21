@@ -31,11 +31,20 @@ export class AccountUserService {
     });
   }
 
-  async getAccountUserById(UserId: number){
+  async getAccountUserById(userId: number){
     return this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
-        id: UserId
+        id: userId
+      }
+    })
+  }
+
+  async getAccountUserByEmail(email: string){
+    return this.accountModel.findOne({
+      rejectOnEmpty: undefined,
+      where: {
+        email: email
       }
     })
   }
@@ -97,6 +106,7 @@ export class AccountUserService {
     }
   }
 
+  //todo: create this method
   async changeAddress(address: Address): Promise<void> {}
 
   async deactivateAccount(email: string, password: string, ): Promise<void> {
