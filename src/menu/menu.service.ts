@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { MenuModel } from './menu.model';
 import { AccountUserService } from '../account-user/account-user.service';
@@ -11,10 +11,15 @@ export class MenuService {
     private readonly accountUserService: AccountUserService,
   ) {}
 
+  logger = new Logger(MenuService.name);
 
   async userVerification(UserId: number):Promise <boolean>{
     const account = await this.accountUserService.getAccountUserById(UserId)
+
+    if(account){
     return account.isAdmin !== false;
+    }
+    throw new HttpException('User verification failed, account dont exist', HttpStatus.NOT_FOUND);
   }
 
   async getMealInformation(foodIdentifier: string):Promise <MenuModel> {
@@ -73,18 +78,18 @@ export class MenuService {
     throw new HttpException('User dont have privilege', HttpStatus.UNAUTHORIZED)
   }
 
-  async updateMeal(name:string, newName: string, description:string, image:string, price:number, available:boolean, userId:number ){
+  async updateMeal(foodIdentifier:string, name: string, description:string, image:string, price:number, available:boolean, userId:number ){
     const valid = await this.userVerification(userId)
 
     if(valid) {
       const existingMenu = await this.menuModel.findOne({
         rejectOnEmpty: undefined,
-        where: { name: name },
+        where: { identifier: foodIdentifier },
       });
 
       if (existingMenu) {
-        if (newName !== undefined) {
-          existingMenu.name = newName;
+        if (name !== undefined) {
+          existingMenu.name = name;
         }
 
         if (description !== undefined) {
@@ -102,6 +107,8 @@ export class MenuService {
         if (available !== true) {
           existingMenu.available = false;
         }
+
+        await existingMenu.save();
       }
       return
     }
@@ -109,12 +116,12 @@ export class MenuService {
 
   }
 
-  async removeMeal(name: string, userId: number){
+  async removeMeal(foodIdentifier: string, userId: number){
     const valid = await this.userVerification(userId)
     if(valid) {
       const existingMenu = await this.menuModel.findOne({
         rejectOnEmpty: undefined,
-        where: { name: name },
+        where: { identifier: foodIdentifier },
       })
 
       if (existingMenu) {
