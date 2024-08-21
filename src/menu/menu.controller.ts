@@ -3,10 +3,9 @@ import { MenuService } from './menu.service';
 import { MenuModel } from './menu.model';
 import { CreateMenuDto } from './dto/createMenuDto';
 import { UpdateMenuDto } from './dto/updateMenuDto';
-import { DeleteMenuDto, deleteMenuDto } from './dto/deleteMenuDto';
+import { DeleteMenuDto } from './dto/deleteMenuDto';
 
 @Controller('menu')
-//todo: criar controller
 export class MenuController {
 
   constructor(private readonly menuService: MenuService) {}
@@ -35,10 +34,11 @@ export class MenuController {
   }
 
   @Post('createMeal')
-  async createMeal(@Body() createMenuDto: CreateMenuDto){
+  async createMeal(@Body() createMenuDto: CreateMenuDto):Promise <string>{
     try {
-      const { name, description, image, price, available, UserId } = createMenuDto;
-      await this.menuService.createMeal(name, description, image, price, available, UserId);
+      const { name, description, image, price, available, userId } = createMenuDto;
+      await this.menuService.createMeal(name, description, image, price, available, userId);
+      return "ok"
     } catch (e) {
       this.logger.error(e)
       throw new HttpException('Failed to create meal', HttpStatus.BAD_REQUEST);
@@ -47,8 +47,8 @@ export class MenuController {
 
   @Put('updateMeal')
   async updateMeal(@Body() updateMenuDto: UpdateMenuDto):Promise<string> {
-    const { name, newName ,description, image, price, available, UserId } = updateMenuDto;
-    await this.menuService.updateMeal(name, newName, description, image, price, available, UserId)
+    const { foodIdentifier, name ,description, image, price, available, userId } = updateMenuDto;
+    await this.menuService.updateMeal(foodIdentifier, name, description, image, price, available, userId)
     return 'ok'
   }
 
@@ -63,8 +63,6 @@ export class MenuController {
       throw new HttpException('Failed to delete meal', HttpStatus.BAD_REQUEST);
     }
   }
-
-
 
 }
 

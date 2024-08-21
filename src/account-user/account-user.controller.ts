@@ -13,6 +13,7 @@ export class AccountUserController {
 
   constructor(private readonly service: AccountUserService) {}
 
+  logger = new Logger('AccountUserController');
 
   @Get(':email')
   async getAccount(@Param('email') email: string) {
@@ -22,14 +23,13 @@ export class AccountUserController {
   @Put('updateAccount')
   async updateAccount(@Body() updateDto: UpdateDto):Promise<string> {
     try{
-      const { email, telephoneNumber, newEmail } = updateDto;
-      await this.service.updateAccountUser(email, newEmail, telephoneNumber);
+      const { accountId ,email, telephoneNumber, name } = updateDto;
+      await this.service.updateAccountUser(accountId , email, name, telephoneNumber);
       return 'ok'
     }catch (e){
       throw new HttpException('Error updating profile', HttpStatus.BAD_REQUEST);
     }
   }
-  logger = new Logger('AccountUserController');
 
   @Post('create')
   async createAccount(@Body() createDto: CreateDto):Promise<string> {
@@ -49,11 +49,11 @@ export class AccountUserController {
     return 'ok';
   }
 
-  //todo: finalize this method
   @Put('changeAddress')
   async changeAddress(@Body() changeAddressDto: ChangeAddressDto):Promise<string> {
-    const { address } = changeAddressDto
-
+    const { accountId , address } = changeAddressDto
+    this.logger.debug(accountId, address );
+    await this.service.changeAddress( accountId , address)
     return 'ok'
   }
 

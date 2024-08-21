@@ -17,36 +17,42 @@ export class AccountUserService {
   logger = new Logger(AccountUserService.name);
 
   async getAccountUserByCpfCnpj(cpfCnpj: string): Promise<AccountUserModel> {
-    return await this.accountModel.findOne({
+    const account =  await this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
         cpfCnpj: cpfCnpj,
       },
-      include: [
-        {
-          model: AccountAuthModel,
-          as: 'accountUserId',
-        },
-      ],
     });
+    if(account){
+      return account
+    }
+    this.logger.error(`Account user not found`);
   }
 
   async getAccountUserById(userId: number){
-    return this.accountModel.findOne({
+    const account = this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
         id: userId
       }
     })
+    if(account){
+      return account
+    }
+    this.logger.error(`Account user not found`);
   }
 
   async getAccountUserByEmail(email: string){
-    return this.accountModel.findOne({
+    const account = this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
         email: email
       }
     })
+    if(account){
+      return account
+    }
+    this.logger.error(`Account user not found`);
   }
 
   async createAccountUser(username: string, password: string ,email: string, telephone: string , cpfCnpj: string, isLegalPerson: boolean, address: Address): Promise<void> {
@@ -85,8 +91,9 @@ export class AccountUserService {
     }
   }
 
-  async updateAccountUser(cpfCnpj: string, email?: string, name?: string, telephoneNumber?:number ): Promise<void> {
-    const account = await this.getAccountUserByCpfCnpj(cpfCnpj)
+  async updateAccountUser(accountId: number, email?: string, name?: string, telephoneNumber?:string ): Promise<void> {
+    const account = await this.getAccountUserById(accountId)
+
     if(account){
       const updateData: any = {};
 
@@ -106,15 +113,29 @@ export class AccountUserService {
     }
   }
 
-  //todo: create this method
-  async changeAddress(address: Address): Promise<void> {}
+  async changeAddress(accountId: number, address: Address): Promise<void> {
+    const account = await this.getAccountUserById(accountId)
+
+    if(account){
+      account.address = address
+      return
+    }
+
+    throw new HttpException("fail to change address", HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
   async deactivateAccount(email: string, password: string, ): Promise<void> {
     const account = await this.accountModel.findOne({
       rejectOnEmpty: undefined,
       where: {
         email: email
-      }
+      },
+      include: [
+        {
+          model: AccountAuthModel,
+          as: 'accountAuth',
+        },
+      ],
     });
 
     if(account.accountAuth.password == Md5.hashStr(password)){
@@ -123,7 +144,7 @@ export class AccountUserService {
       })
       return
     }
-    throw new HttpException('fail to deactivate account', HttpStatus.BAD_REQUEST);
+    throw new HttpException('fail to deactivate account, password don`t match', HttpStatus.BAD_REQUEST);
   }
 
   async addAdmin(currentAdminEmail: string, newAdminEmail:string): Promise<void> {
@@ -139,8 +160,10 @@ export class AccountUserService {
       });
 
       if(newAccount){
-      newAccount.isAdmin = true;
-      return
+        await newAccount.update({
+          isAdmin: true,
+        })
+        return
       }
       throw new HttpException('fail to add admin, account not exist', HttpStatus.BAD_REQUEST);
     }
@@ -161,7 +184,9 @@ export class AccountUserService {
       });
 
       if (targetAdminAccount) {
-        targetAdminAccount.isAdmin = false;
+        await targetAdminAccount.update({
+          isAdmin: false,
+        })
         return;
       }
       throw new HttpException('Failed to remove admin, account does not exist', HttpStatus.BAD_REQUEST);
