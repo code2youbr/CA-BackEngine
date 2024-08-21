@@ -17,8 +17,33 @@ export class MenuService {
     return account.isAdmin !== false;
   }
 
+  async getMealInformation(foodIdentifier: string):Promise <MenuModel> {
+    return this.menuModel.findOne({
+      rejectOnEmpty: undefined,
+      where:{
+        identifier: foodIdentifier
+      }
+    })
+  }
   async getAllMeals():Promise <MenuModel[]> {
     return this.menuModel.findAll()
+  }
+
+  async generateUniqueIdentifier(): Promise<string> {
+    const lastItem = await this.menuModel.findOne({
+      order: [['id', 'DESC']],
+    });
+
+    let nextId = 1;
+
+    if (lastItem) {
+      const lastIdentifier = lastItem.identifier;
+      const numericPart = parseInt(lastIdentifier.split('-')[1], 10);
+      nextId = numericPart + 1;
+    }
+
+    const paddedId = nextId.toString().padStart(4, '0');
+    return `EX-${paddedId}`;
   }
 
   async createMeal(name:string, description:string ,image:string ,price:number , available: boolean, userId: number){
@@ -40,6 +65,7 @@ export class MenuService {
         image,
         price,
         available,
+        identifier: await this.generateUniqueIdentifier()
       })
       return
     }

@@ -11,6 +11,7 @@ import { AccountUserModule } from '../account-user/account-user.module';
     AccountUserModule
   ],
   providers: [MenuService],
-  controllers: [MenuController]
+  controllers: [MenuController],
+  exports: [MenuService]
 })
 export class MenuModule {}

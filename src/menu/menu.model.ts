@@ -34,7 +34,7 @@ export class MenuModel extends Model {
 
   @Column({
     allowNull: false,
-    type: DataTypes.FLOAT,
+    type: DataTypes.INTEGER,
   })
   price: number
 
@@ -44,4 +44,10 @@ export class MenuModel extends Model {
     type: DataTypes.BOOLEAN,
   })
   available: boolean
+
+  @Column({
+    allowNull: false,
+    type: DataTypes.STRING,
+  })
+  identifier: string
 }
