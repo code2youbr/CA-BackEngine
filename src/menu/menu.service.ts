@@ -109,12 +109,12 @@ export class MenuService {
 
   }
 
-  async removeMeal(name: string, userId: number){
+  async removeMeal(foodIdentifier: string, userId: number){
     const valid = await this.userVerification(userId)
     if(valid) {
       const existingMenu = await this.menuModel.findOne({
         rejectOnEmpty: undefined,
-        where: { name: name },
+        where: { identifier: foodIdentifier },
       })
 
       if (existingMenu) {
