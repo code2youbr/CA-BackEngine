@@ -172,55 +172,64 @@ export class PagbankService {
 
   }
 
-  async paymentOrderCreditCard(orderId: string, payment: PaymentMethod,): Promise<PaymentOrderResponse> {
-    const { installments, soft_descriptor, card } = payment
+  async paymentOrderCreditCard(
+    orderId: string,
+    payment: PaymentMethod
+  ): Promise<PaymentOrderResponse> {
+    const { installments, soft_descriptor, card } = payment;
+
     const order = await this.pagBankModel.findOne({
       rejectOnEmpty: undefined,
-      where:{
-        orderId: orderId,
-      },
+      where: { orderId },
       include: [{
         model: AccountUserModel,
         as: 'user'
       }]
     });
 
-    const url = `/orders/${orderId}/pay`
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    const url = `/orders/${orderId}/pay`;
     const body = {
       charges: [{
         reference_id: order.identifier,
         description: `payment of ${order.orderInfo.foodIdentifiers}`,
-        amount:{
+        amount: {
           value: order.orderInfo.totalAmount,
           currency: 'BRL'
         },
         payment_method: {
           type: "CREDIT_CARD",
-          installments: installments,
+          installments,
           capture: true,
-          soft_descriptor: soft_descriptor,
-          card: card
+          soft_descriptor,
+          card
         }
       }]
-    }
-
+    };
 
     try {
-      const response = await this.httpService.axiosRef.post<PaymentOrderResponse>(url, body);
+      const { data } = await this.httpService.axiosRef.post<PaymentOrderResponse>(url, body);
 
-      //todo: create function that can save the card token
-      if(card.store){
-        await this.accountUserService.savePagBankToken(response.data.paymeny)
+      // Função para salvar o token do cartão, se aplicável
+      if (card.store) {
+        await this.accountUserService.savePagBankToken(
+          order.user.cpfCnpj,
+          data.payment_method.card.id,
+          data.payment_method.card.last_digits
+        );
       }
 
-      return response.data.reference_id;
+      return data;
 
-    }catch (error) {
-      this.logger.error(error)
-      return undefined
+    } catch (error) {
+      this.logger.error('Error processing payment:', error);
+      throw new Error('Payment processing failed'); // Lançar o erro é melhor do que retornar `undefined`
     }
-
   }
+
 
   async paymentOrderDebitCard(orderId: string, card: PaymentMethod):Promise <PaymentOrderResponse>{
     const order = await this.pagBankModel.findOne({
